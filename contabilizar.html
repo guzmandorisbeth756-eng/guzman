@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Convertidor de Pesos y Dólares</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contenedor {
+      display: flex;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .convertidor, .tabla {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #d395b8;
+      color: white;
+    }
+
+    tfoot {
+      font-weight: bold;
+      background: #eee;
+    }
+
+    .tabla input {
+      width: 60px;
+    }
+
+    #resultadoConversion {
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
+    /* BOTÓN REGRESAR */
+    .regresar{
+        background:#1fc54c;
+        padding:10px 25px;
+        border-radius:25px;
+        text-decoration:none;
+        color:white;
+        font-weight:bold;
+        position:absolute;
+        top:20px;
+        left:20px;
+        box-shadow:0 3px 6px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .contenedor {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html" class="regresar">Regresar</a>
+
+  <div class="contenedor">
+
+    <!-- Convertidor -->
+    <div class="convertidor">
+      <h2>Convertidor</h2>
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" placeholder="Tu nombre">
+
+      <label for="entidad">Tipo de conversión</label>
+      <select id="entidad">
+        <option value="">--Selecciona--</option>
+        <option value="p2d">Pesos a Dólares</option>
+        <option value="d2p">Dólares a Pesos</option>
+      </select>
+
+      <label for="cantidadConversion">Cantidad</label>
+      <input type="number" id="cantidadConversion" placeholder="$$">
+
+      <button onclick="convertir()">Calcular</button>
+
+      <p id="resultadoConversion"></p>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla">
+      <h2>Ahorro</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Billete</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$20</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="20"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+          <tr>
+            <td>$50</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="50"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+          <tr>
+            <td>$100</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="100"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+          <tr>
+            <td>$200</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="200"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+          <tr>
+            <td>$500</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="500"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+          <tr>
+            <td>$1000</td>
+            <td><input type="number" value="0" class="cantidad" data-valor="1000"></td>
+            <td class="totalPorDenominacion">$0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">TOTAL AHORRADO</td>
+            <td id="totalGeneral">$0</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function convertir() {
+      const tipo = document.getElementById("entidad").value;
+      const cantidad = parseFloat(document.getElementById("cantidadConversion").value);
+      const resultado = document.getElementById("resultadoConversion");
+      const tasaCambio = 19; // Tasa de cambio (1 USD = 19 MXN)
+
+      if (isNaN(cantidad) || cantidad <= 0) {
+        resultado.textContent = "Ingresa una cantidad válida.";
+        return;
+      }
+
+      let convertido = 0;
+      if (tipo === "p2d") {
+        convertido = cantidad / tasaCambio;
+        resultado.textContent = `$${cantidad} pesos ≈ $${convertido.toFixed(2)} dólares`;
+      } else if (tipo === "d2p") {
+        convertido = cantidad * tasaCambio;
+        resultado.textContent = `$${cantidad} dólares ≈ $${convertido.toFixed(2)} pesos`;
+      } else {
+        resultado.textContent = "Selecciona el tipo de conversión.";
+      }
+    }
+
+    function actualizarTotales() {
+      const inputs = document.querySelectorAll(".cantidad");
+      let totalGeneral = 0;
+
+      inputs.forEach(input => {
+        const cantidad = parseInt(input.value) || 0;
+        const valor = parseInt(input.dataset.valor);
+        const total = cantidad * valor;
+
+        // Mostrar total por denominación
+        const celdaTotal = input.parentElement.nextElementSibling;
+        celdaTotal.textContent = `$${total.toLocaleString()}`;
+
+        totalGeneral += total;
+      });
+
+      // Mostrar total general
+      document.getElementById("totalGeneral").textContent = `$${totalGeneral.toLocaleString()}`;
+    }
+
+    // Escuchar cambios en los inputs de la tabla
+    document.querySelectorAll(".cantidad").forEach(input => {
+      input.addEventListener("input", actualizarTotales);
+    });
+
+    // Calcular totales al cargar la página
+    actualizarTotales();
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contenedor con Cajas Coloreadas</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Caja con color */
+        .caja {
+            width: 120px;
+            height: 70px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            background-color: #8a2be2;
+            text-decoration: none;        /* Quita subrayado del enlace */
+        }
+
+        .caja:hover {
+            opacity: 0.8; /* Efecto cuando se pasa el mouse */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <!-- Caja 1 enlazada -->
+        <a href="contabilizar.html" class="caja">C.B</a>
+
+        <!-- Caja 2 normal -->
+        <div class="caja">F.I.E <a href="Info.html" class="caja">C.B</a></div>
+    </div>
+
+</body>
+</html>
